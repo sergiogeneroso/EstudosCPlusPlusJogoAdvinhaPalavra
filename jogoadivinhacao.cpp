@@ -3,7 +3,17 @@
 
 using namespace std;
 
-int main()
+int numero_maximo_tentativas;
+
+bool acertou = false;
+
+int tentativas = 0;
+
+double pontos = 1000.0;
+
+int numeroSecreto;
+
+void imprimirCabecalho()
 {
     cout << "********************************************" << endl;
     cout << "** Bem-vindudos ao jogo da adivinhacao! **" << endl;
@@ -11,12 +21,13 @@ int main()
 
     cout << "Escolha o seu nivel de dificuldade: " << endl;
     cout << "Facil (F), Medio (M), Dificil (D)" << endl;
+}
 
+void configurarDificuldade()
+{
     char dificuldade;
 
     cin >> dificuldade;
-
-    int numero_maximo_tentativas;
 
     if (dificuldade == 'F')
     {
@@ -30,16 +41,39 @@ int main()
     {
         numero_maximo_tentativas = 5;
     }
+}
 
-    const int NUMERO_SECRETO = rand() % 100;
+void gerarNumeroSecreto()
+{
+    numeroSecreto = rand() % 100;
+}
 
+bool validarAcerto(int chute)
+{
+    acertou = chute == numeroSecreto;
+
+    bool maior = chute > numeroSecreto;
+
+    if (acertou)
+    {
+        cout << "Parabens voce acertou o numero secreto" << endl;
+        return true;
+    }
+    else if (maior)
+    {
+        cout << "Seu chute foi maior que o numero secreto!" << endl;
+        return false;
+    }
+    else
+    {
+        cout << "Seu chute foi menor que o numero secreto!" << endl;
+        return false;
+    }
+}
+
+void processarTentativas()
+{
     int chute;
-
-    bool acertou = false;
-
-    int tentativas = 0;
-
-    double pontos = 1000.0;
 
     for (tentativas = 1; tentativas <= numero_maximo_tentativas; tentativas++)
     {
@@ -48,31 +82,19 @@ int main()
 
         cin >> chute;
 
-        double pontos_perdidos = abs((chute - NUMERO_SECRETO)) / 2.0;
+        double pontos_perdidos = abs((chute - numeroSecreto)) / 2.0;
 
         pontos = pontos - pontos_perdidos;
 
         cout << "O valor do seu chute e: " << chute << endl;
 
-        acertou = chute == NUMERO_SECRETO;
-
-        bool maior = chute > NUMERO_SECRETO;
-
-        if (acertou)
-        {
-            cout << "Parabens voce acertou o numero secreto" << endl;
+        if (validarAcerto(chute))
             break;
-        }
-        else if (maior)
-        {
-            cout << "Seu chute foi maior que o numero secreto!" << endl;
-        }
-        else
-        {
-            cout << "Seu chute foi menor que o numero secreto!" << endl;
-        }
     }
+}
 
+void imprimirRodaPe()
+{
     cout << "Fim de jogo." << endl;
     if (acertou)
     {
@@ -85,4 +107,17 @@ int main()
     {
         cout << "Voce perdeu! Tente novamente!" << endl;
     }
+}
+
+int main()
+{
+    imprimirCabecalho();
+
+    configurarDificuldade();
+
+    gerarNumeroSecreto();
+
+    processarTentativas();
+    
+    imprimirRodaPe();
 }
